@@ -145,9 +145,6 @@ pnpm dev
 ```bash
 # webアプリのみ
 pnpm --filter web dev
-
-# UIパッケージのみ
-pnpm --filter @repo/ui check-types
 ```
 
 ## 📜 利用可能なスクリプト
