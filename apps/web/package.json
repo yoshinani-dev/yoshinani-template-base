@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "check-types": "next typegen && tsc --noEmit",
-    "check:fix": "pnpm run lint --fix && biome check --write .",
-    "check": "pnpm run lint && biome check .",
     "dev": "next dev --turbopack",
-    "lint": "eslint . --max-warnings 0",
+    "build": "next build",
+    "check": "next typegen && tsc --noEmit && biome check --write . && eslint . --max-warnings 0 --fix",
+    "check:ci": "next typegen && tsc --noEmit && biome check . && eslint . --max-warnings 0",
     "start": "next start",
     "test": "vitest"
   },
