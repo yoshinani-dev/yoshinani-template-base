@@ -3,11 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "check-types": "tsc --noEmit",
-    "check:fix": "pnpm run lint --fix && biome check --write .",
-    "check": "pnpm run lint && biome check .",
+    "check": "tsc --noEmit && biome check --write . && eslint . --max-warnings 0 --fix",
+    "check:ci": "tsc --noEmit && biome check . && eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
-    "lint": "eslint . --max-warnings 0",
     "ui": "pnpm dlx shadcn@latest"
   },
   "dependencies": {

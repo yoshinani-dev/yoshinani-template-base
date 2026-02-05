@@ -10,18 +10,12 @@
     "check": {
       "dependsOn": ["^check"]
     },
-    "check:fix": {
-      "dependsOn": ["^check:fix"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"]
+    "check:ci": {
+      "dependsOn": ["^check:ci"]
     },
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
     },
     "test": {
       "dependsOn": ["^test"]

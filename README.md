@@ -145,9 +145,6 @@ pnpm dev
 ```bash
 # webアプリのみ
 pnpm --filter web dev
-
-# UIパッケージのみ
-pnpm --filter @repo/ui check-types
 ```
 
 ## 📜 利用可能なスクリプト
@@ -159,10 +156,7 @@ pnpm --filter @repo/ui check-types
 | `pnpm dev` | すべてのアプリケーションの開発サーバーを起動 |
 | `pnpm build` | すべてのパッケージをビルド |
 | `pnpm check` | リンターとフォーマッターを実行（修正なし） |
-| `pnpm check:fix` | リンターとフォーマッターを実行（自動修正） |
-| `pnpm check-types` | すべてのパッケージの型チェックを実行 |
-| `pnpm lint` | ESLintを実行（自動修正） |
-| `pnpm lint:ci` | ESLintを実行（CI用、修正なし） |
+| `pnpm check:ci` | リンターとフォーマッターを実行（自動修正） |
 | `pnpm format` | Biomeでフォーマット（自動修正） |
 | `pnpm format:ci` | Biomeでフォーマット（CI用、修正なし） |
 | `pnpm test` | すべてのパッケージのテストを実行 |
@@ -273,20 +267,17 @@ pnpm dlx shadcn@latest add button card dialog
 
 ### コードチェックの実行
 
-`pnpm check`または`pnpm check:fix`を実行すると、以下のチェックが行われます:
+`pnpm check`または`pnpm check:ci`を実行すると、以下のチェックが行われます:
 
 - **ESLint**: コードの静的解析（リント）
 - **Biome**: コードフォーマットとインポートソートのチェック
 
 ```bash
 # すべてのチェックを実行（修正なし）
-pnpm check
+pnpm check:ci
 
 # 自動修正を適用
-pnpm check:fix
-
-# 型チェックのみ
-pnpm check-types
+pnpm check
 ```
 
 ## 🚢 CI/CD
