@@ -8,7 +8,8 @@
     "check": "next typegen && tsc --noEmit && biome check --write . && eslint . --max-warnings 0 --fix",
     "check:ci": "next typegen && tsc --noEmit && biome check . && eslint . --max-warnings 0",
     "start": "next start",
-    "test": "vitest"
+    "test": "vitest",
+    "test:ci": "vitest run"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
