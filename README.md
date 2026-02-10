@@ -282,12 +282,14 @@ pnpm check
 
 ## 🚢 CI/CD
 
-GitHub Actionsを使用してCI/CDパイプラインが設定されています:
+GitHub Actionsで以下のワークフローが PR および手動実行時に動きます:
 
-- **check**: リンター（ESLint）とフォーマッター（Biome）のチェック
-- **type-check**: TypeScriptの型チェック
+| ワークフロー | ジョブ名 | 内容 |
+|-------------|----------|------|
+| [Check](.github/workflows/check.yml) | `check` | 型チェック（TypeScript）・Biome・ESLint |
+| [Test](.github/workflows/test.yml) | `test` | Vitest による単体テスト |
 
-プッシュやプルリクエスト時に自動的に実行されます。
+**PR でテストを必須にするには**、GitHub のブランチ保護ルールで上記のステータスチェック（`check` と `test`）を「必須」にしてください。手順は [.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md) を参照してください。
 
 ## 📚 関連ドキュメント
 
