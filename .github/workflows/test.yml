@@ -39,6 +39,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install dependencies (main)
+        if: github.event_name == 'pull_request'
+        working-directory: repo-main
+        run: pnpm install --frozen-lockfile
+
       - name: Prepare main dependencies
         if: github.event_name == 'pull_request'
         working-directory: repo-main
