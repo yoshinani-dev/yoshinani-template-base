@@ -39,9 +39,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install dependencies (main)
+      - name: Prepare main dependencies
         if: github.event_name == 'pull_request'
-        run: pnpm -C repo-main install --frozen-lockfile
+        run: pnpm -C repo-main --filter web add -D @vitest/coverage-v8
 
       - name: Run tests
         run: pnpm test:ci
