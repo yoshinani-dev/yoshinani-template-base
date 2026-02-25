@@ -2,7 +2,7 @@ name: Test
 
 permissions:
   contents: read
-  issues: write
+  pull-requests: write
 
 on:
   pull_request:
@@ -33,46 +33,8 @@ jobs:
       - name: Run tests
         run: pnpm test:ci
 
-      - name: Generate coverage report
-        if: success()
-        run: node scripts/coverage-report.mjs --input apps/web/coverage/coverage-summary.json --output coverage-report.md --label apps/web
-
-      - name: Comment coverage on PR
+      - name: Report coverage
         if: github.event_name == 'pull_request' && success()
-        uses: actions/github-script@v7
+        uses: davelosert/vitest-coverage-report-action@v2
         with:
-          script: |
-            const fs = require("node:fs")
-
-            const body = fs.readFileSync("coverage-report.md", "utf8")
-            const marker = "<!-- vitest-coverage-report -->"
-
-            const { owner, repo } = context.repo
-            const issue_number = context.payload.pull_request.number
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number,
-              per_page: 100,
-            })
-
-            const existing = comments.find((comment) =>
-              comment.body?.includes(marker),
-            )
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: existing.id,
-                body,
-              })
-            } else {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body,
-              })
-            }
+          working-directory: apps/web
