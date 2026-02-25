@@ -9,7 +9,7 @@
     "check:ci": "next typegen && tsc --noEmit && biome check . && eslint . --max-warnings 0",
     "start": "next start",
     "test": "vitest",
-    "test:ci": "vitest run --coverage"
+    "test:ci": "vitest run --coverage --coverage.provider v8 --coverage.reporter text --coverage.reporter json-summary --coverage.reporter html --coverage.reportsDirectory ./coverage"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
@@ -25,6 +25,7 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint-config-next": "16.1.6",
     "jsdom": "^25.0.1",
