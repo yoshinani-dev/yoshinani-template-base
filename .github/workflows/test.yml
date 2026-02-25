@@ -16,6 +16,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: repo-main
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -26,15 +32,40 @@ jobs:
         with:
           node-version: 24
           cache: "pnpm"
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            repo-main/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install dependencies (main)
+        if: github.event_name == 'pull_request'
+        run: pnpm -C repo-main install --frozen-lockfile
+
       - name: Run tests
         run: pnpm test:ci
+
+      - name: Run tests (main)
+        if: github.event_name == 'pull_request'
+        run: >-
+          pnpm -C repo-main/apps/web vitest run --coverage
+          --coverage.provider v8
+          --coverage.reporter text
+          --coverage.reporter json-summary
+          --coverage.reporter json
+          --coverage.reporter html
+          --coverage.reportsDirectory ./coverage
+          --coverage.all true
+          --coverage.include "app/**/*.{ts,tsx}"
+          --coverage.include "env.ts"
+          --coverage.exclude "**/*.{test,spec}.{ts,tsx}"
+          --coverage.exclude "**/*.d.ts"
 
       - name: Report coverage
         if: github.event_name == 'pull_request' && success()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
-          working-directory: apps/web
+          json-summary-path: apps/web/coverage/coverage-summary.json
+          json-summary-compare-path: repo-main/apps/web/coverage/coverage-summary.json
+          json-final-path: apps/web/coverage/coverage-final.json

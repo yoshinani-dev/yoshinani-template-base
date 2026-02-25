@@ -9,7 +9,7 @@
     "check:ci": "next typegen && tsc --noEmit && biome check . && eslint . --max-warnings 0",
     "start": "next start",
     "test": "vitest",
-    "test:ci": "vitest run --coverage --coverage.provider v8 --coverage.reporter text --coverage.reporter json-summary --coverage.reporter json --coverage.reporter html --coverage.reportsDirectory ./coverage"
+    "test:ci": "vitest run --coverage --coverage.provider v8 --coverage.reporter text --coverage.reporter json-summary --coverage.reporter json --coverage.reporter html --coverage.reportsDirectory ./coverage --coverage.all true --coverage.include 'app/**/*.{ts,tsx}' --coverage.include 'env.ts' --coverage.exclude '**/*.{test,spec}.{ts,tsx}' --coverage.exclude '**/*.d.ts'"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
