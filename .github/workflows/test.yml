@@ -2,12 +2,10 @@ name: Test
 
 permissions:
   contents: read
+  pull-requests: write
 
 on:
   pull_request:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -17,6 +15,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Checkout main
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: repo-main
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -32,12 +37,40 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install dependencies (main)
+        if: github.event_name == 'pull_request'
+        working-directory: repo-main
+        run: pnpm install --frozen-lockfile
+
+      - name: Prepare main dependencies
+        if: github.event_name == 'pull_request'
+        working-directory: repo-main
+        run: pnpm --filter web add -D @vitest/coverage-v8
+
       - name: Run tests
         run: pnpm test:ci
 
-      - name: Upload coverage
-        if: success()
-        uses: actions/upload-artifact@v5
+      - name: Run tests (main)
+        if: github.event_name == 'pull_request'
+        working-directory: repo-main/apps/web
+        run: >-
+          pnpm vitest run --coverage
+          --coverage.provider v8
+          --coverage.reporter text
+          --coverage.reporter json-summary
+          --coverage.reporter json
+          --coverage.reporter html
+          --coverage.reportsDirectory ./coverage
+          --coverage.all true
+          --coverage.include "app/**/*.{ts,tsx}"
+          --coverage.include "env.ts"
+          --coverage.exclude "**/*.{test,spec}.{ts,tsx}"
+          --coverage.exclude "**/*.d.ts"
+
+      - name: Report coverage
+        if: github.event_name == 'pull_request' && success()
+        uses: davelosert/vitest-coverage-report-action@v2
         with:
-          name: coverage
-          path: apps/web/coverage
+          json-summary-path: apps/web/coverage/coverage-summary.json
+          json-summary-compare-path: repo-main/apps/web/coverage/coverage-summary.json
+          json-final-path: apps/web/coverage/coverage-final.json
