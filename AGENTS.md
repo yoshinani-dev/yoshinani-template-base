@@ -31,3 +31,12 @@
 - `pnpm check`: 型チェック、リント、フォーマットチェック
 - `pnpm test`: テスト実行
 - `pnpm e2e`: E2Eテスト実行
+
+## Cursor Cloud specific instructions
+
+- **ランタイム**: Node.js >= 22 と pnpm 10.12.4 が必要（VM環境にプリインストール済み）
+- **開発サーバー**: `apps/web` ディレクトリで `pnpm dev` を実行するとポート3000でNext.js（Turbopack）が起動する
+- **リント/チェック**: CIと同じ非対話的チェックには `pnpm check:ci` を使用（`pnpm check` は自動修正付き）
+- **テスト**: `pnpm test:ci` でVitest単体テストをワンショット実行（`pnpm test` はwatchモード）
+- **外部サービス不要**: データベース、Docker、外部APIへの依存なし。純粋なフロントエンドモノレポ
+- **`pnpm-workspace.yaml`の`onlyBuiltDependencies`**: ネイティブモジュール（sharp, esbuild等）のビルド承認は設定済み。対話的な`pnpm approve-builds`は不要
