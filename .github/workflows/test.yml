@@ -39,5 +39,5 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v5
         with:
-          name: coverage
+          name: coverage-${{ github.sha }}
           path: apps/web/coverage
