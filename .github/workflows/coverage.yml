@@ -46,7 +46,7 @@ jobs:
             core.setOutput("found", "true")
             core.setOutput("base-sha", baseSha)
 
-      - name: Find main coverage run
+      - name: Find main coverage artifact
         if: steps.base-sha.outputs.found == 'true'
         id: main-coverage
         uses: actions/github-script@v7
@@ -56,31 +56,30 @@ jobs:
           script: |
             const baseSha = process.env.BASE_SHA
             const { owner, repo } = context.repo
-            const { data } = await github.rest.actions.listWorkflowRuns({
+            const { data } = await github.rest.actions.listArtifactsForRepo({
               owner,
               repo,
-              workflow_id: "test.yml",
-              head_sha: baseSha,
-              per_page: 1,
+              per_page: 100,
             })
 
-            const run = data.workflow_runs?.[0]
+            const artifact = data.artifacts.find(
+              (item) => item.name === `coverage-${baseSha}`,
+            )
 
-            if (!run) {
+            if (!artifact) {
               core.setOutput("found", "false")
               return
             }
 
             core.setOutput("found", "true")
-            core.setOutput("run-id", String(run.id))
+            core.setOutput("artifact-id", String(artifact.id))
 
       - name: Download coverage artifact (main)
         if: steps.main-coverage.outputs.found == 'true'
         uses: actions/download-artifact@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.main-coverage.outputs.run-id }}
-          name: coverage-${{ steps.base-sha.outputs.base-sha }}
+          artifact-ids: ${{ steps.main-coverage.outputs.artifact-id }}
           path: coverage-main
 
       - name: Report coverage (compare main)
