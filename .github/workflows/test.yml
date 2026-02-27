@@ -1,15 +1,20 @@
 name: Test
 
-permissions:
-  contents: read
-
 on:
   pull_request:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
 
     steps:
       - name: Checkout code
@@ -31,3 +36,31 @@ jobs:
 
       - name: Run tests
         run: pnpm test:ci
+
+      - name: Upload coverage
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-${{ github.sha }}
+          path: apps/web/coverage
+
+      - name: Download coverage artifact (main)
+        if: github.event_name == 'pull_request'
+        id: main-coverage
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v9
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: test.yml
+          commit: ${{ github.event.pull_request.base.sha }}
+          name: coverage-${{ github.event.pull_request.base.sha }}
+          path: coverage-main
+          if_no_artifact_found: ignore
+
+      - name: Report coverage
+        if: github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          json-summary-path: apps/web/coverage/coverage-summary.json
+          json-summary-compare-path: ${{ steps.main-coverage.outputs.found_artifact == 'true' && 'coverage-main/coverage-summary.json' || '' }}
+          json-final-path: apps/web/coverage/coverage-final.json
