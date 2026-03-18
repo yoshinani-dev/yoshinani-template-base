@@ -12,12 +12,12 @@
     "test:ci": "turbo test:ci"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.6",
+    "@biomejs/biome": "^2.4.7",
     "@yoshinani/style-guide": "^0.17.7",
     "eslint": "^9.39.4",
-    "turbo": "^2.8.14",
+    "turbo": "^2.8.17",
     "typescript": "5.9.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   },
   "packageManager": "pnpm@10.12.4",
   "engines": {
