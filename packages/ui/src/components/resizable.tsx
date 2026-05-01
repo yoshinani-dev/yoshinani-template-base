@@ -1,6 +1,5 @@
 "use client"
 
-import { type ClassValue } from "clsx"
 import { GripVerticalIcon } from "lucide-react"
 import * as React from "react"
 import {
@@ -20,7 +19,7 @@ function ResizablePanelGroup({ className, ...props }: GroupProps) {
       data-slot="resizable-panel-group"
       className={cn(
         "flex h-full w-full data-[panel-group-direction=vertical]:flex-col",
-        className as ClassValue,
+        className,
       )}
       {...props}
     />
