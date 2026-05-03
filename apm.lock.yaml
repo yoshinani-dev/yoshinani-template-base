@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-05-03T18:18:38.696843+00:00'
+generated_at: '2026-05-03T18:33:58.260207+00:00'
 apm_version: 0.12.0
 dependencies:
 - repo_url: vercel-labs/agent-skills
@@ -10,6 +10,7 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/react-best-practices
+  - .claude/skills/react-best-practices
   content_hash: sha256:74f142d28d360d78e8bac4f239a84c87f0ced9015729bc72b5458d82ff45b015
 - repo_url: vercel-labs/next-skills
   host: github.com
@@ -19,6 +20,7 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/next-best-practices
+  - .claude/skills/next-best-practices
   content_hash: sha256:48ae165cb0ff7265342536ff95203d96ba53840f1c04faae797cecbd2b8a5d31
 - repo_url: vercel-labs/next-skills
   host: github.com
@@ -28,6 +30,7 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/next-cache-components
+  - .claude/skills/next-cache-components
   content_hash: sha256:a94b83ddcd2ff1c30722577f693b1bfe32f2e1a83abdd6c08c2d6cc6753b53c8
 - repo_url: yoshinani-dev/skills
   host: github.com
@@ -37,4 +40,5 @@ dependencies:
   package_type: claude_skill
   deployed_files:
   - .agents/skills/submit-pr
+  - .claude/skills/submit-pr
   content_hash: sha256:17056f9be95b2d534a20dc9912027b941d683778c7b6f46049ec67bc69070d89
