@@ -16,6 +16,14 @@
 
 - `packages/ui`: 共通のUIコンポーネントライブラリ
 
+## エージェント依存関係（Microsoft APM）
+
+スキルなどのエージェント向け依存は [Microsoft APM](https://github.com/microsoft/apm) で管理しています。
+
+- **マニフェスト**: ルートの `apm.yml`
+- **ロック**: `apm.lock.yaml`（コミットする）
+- **初回・依存更新後**: リポジトリルートで `apm install` を実行すると、ロックに従い `.agents/skills/` などへ展開されます
+
 ## コーディング規約
 
 - **TypeScript**: strict有効、`any`は避ける
