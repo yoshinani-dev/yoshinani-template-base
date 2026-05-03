@@ -4,10 +4,18 @@ description: APM project for yoshinani-template-base
 author: FukeKazki
 dependencies:
   apm:
-    - yoshinani-dev/skills/skills/submit-pr
-    - vercel-labs/next-skills/skills/next-best-practices
-    - vercel-labs/next-skills/skills/next-cache-components
-    - vercel-labs/agent-skills/skills/react-best-practices
-  mcp: []
+  - yoshinani-dev/skills/skills/submit-pr
+  - vercel-labs/next-skills/skills/next-best-practices
+  - vercel-labs/next-skills/skills/next-cache-components
+  - vercel-labs/agent-skills/skills/react-best-practices
+  mcp:
+    - name: linear
+      registry: false
+      transport: http
+      url: https://mcp.linear.app/mcp
+    - name: figma
+      registry: false
+      transport: http
+      url: https://mcp.figma.com/mcp
 includes: auto
 scripts: {}

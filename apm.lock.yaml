@@ -1,5 +1,5 @@
 lockfile_version: '1'
-generated_at: '2026-05-03T18:33:58.260207+00:00'
+generated_at: '2026-05-03T18:59:17.710231+00:00'
 apm_version: 0.12.0
 dependencies:
 - repo_url: vercel-labs/agent-skills
@@ -42,3 +42,17 @@ dependencies:
   - .agents/skills/submit-pr
   - .claude/skills/submit-pr
   content_hash: sha256:17056f9be95b2d534a20dc9912027b941d683778c7b6f46049ec67bc69070d89
+mcp_servers:
+- figma
+- linear
+mcp_configs:
+  figma:
+    name: figma
+    transport: http
+    registry: false
+    url: https://mcp.figma.com/mcp
+  linear:
+    name: linear
+    transport: http
+    registry: false
+    url: https://mcp.linear.app/mcp
