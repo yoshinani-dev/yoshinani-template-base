@@ -22,5 +22,10 @@
   "packageManager": "pnpm@10.12.4",
   "engines": {
     "node": ">=22"
+  },
+  "pnpm": {
+    "overrides": {
+      "vitest": "4.1.5"
+    }
   }
 }
