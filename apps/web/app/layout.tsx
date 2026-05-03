@@ -1,15 +1,20 @@
 import "@repo/ui/src/styles/globals.css"
 
 import type { Metadata } from "next"
-import localFont from "next/font/local"
+import { Noto_Sans_JP } from "next/font/google"
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-})
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
+const notoSansJp = Noto_Sans_JP({
+  subsets: ["latin"],
+  display: "swap",
+  preload: false,
+  variable: "--font-noto-sans-jp",
+  fallback: [
+    "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN",
+    "Yu Gothic",
+    "Meiryo",
+    "sans-serif",
+  ],
 })
 
 export const metadata: Metadata = {
@@ -24,9 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+      <body className={notoSansJp.variable}>{children}</body>
     </html>
   )
 }

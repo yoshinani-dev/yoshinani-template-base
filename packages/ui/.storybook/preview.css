@@ -1,12 +1,9 @@
 /**
- * Storybook 用。Web の RootLayout（next/font/local）に無い `--font-geist-*` を :root に定義。
- * `apps/web` の Geist と同じ CSS 変数名で、システムフォントにフォールバックする。
+ * Storybook では next/font が効かないため、preview-head.html で Google Fonts を読み込み、
+ * Web の RootLayout と同じ `--font-noto-sans-jp` を :root に定義する。
  */
 :root {
-  --font-geist-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-geist-mono: ui-monospace, monospace;
-}
-
-body {
-  font-family: var(--font-geist-sans);
+  --font-noto-sans-jp:
+    "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    "Meiryo", ui-sans-serif, system-ui, sans-serif;
 }
