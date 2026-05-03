@@ -1,0 +1,13 @@
+name: yoshinani-template-base
+version: 1.0.0
+description: APM project for yoshinani-template-base
+author: FukeKazki
+dependencies:
+  apm:
+    - yoshinani-dev/skills/skills/submit-pr
+    - vercel-labs/next-skills/skills/next-best-practices
+    - vercel-labs/next-skills/skills/next-cache-components
+    - vercel-labs/agent-skills/skills/react-best-practices
+  mcp: []
+includes: auto
+scripts: {}
