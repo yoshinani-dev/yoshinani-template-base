@@ -1,0 +1,62 @@
+name: Chromatic
+
+on:
+  pull_request:
+    paths:
+      - "packages/ui/**"
+      - ".github/workflows/chromatic.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/ui/**"
+      - ".github/workflows/chromatic.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    # Secret 未設定のフォークやテンプレ利用では Chromatic を実行しない
+    if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.12.4
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: packages/ui
+
+      - name: Comment Chromatic URLs on PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: chromatic-preview
+          message: |
+            ## Chromatic Preview
+            - Storybook: ${{ steps.chromatic.outputs.storybookUrl }}
+            - Build: ${{ steps.chromatic.outputs.buildUrl }}

@@ -1,0 +1,12 @@
+/**
+ * Storybook 用。Web の RootLayout（next/font/local）に無い `--font-geist-*` を :root に定義。
+ * `apps/web` の Geist と同じ CSS 変数名で、システムフォントにフォールバックする。
+ */
+:root {
+  --font-geist-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: ui-monospace, monospace;
+}
+
+body {
+  font-family: var(--font-geist-sans);
+}

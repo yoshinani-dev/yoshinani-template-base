@@ -6,6 +6,11 @@
     },
     "types": []
   },
-  "include": ["src", "postcss.config.mjs", "turbo/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "postcss.config.mjs",
+    "turbo/**/*.ts",
+    "vitest.shims.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "storybook-static"]
 }
