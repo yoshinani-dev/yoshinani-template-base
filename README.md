@@ -17,21 +17,21 @@ yoshinani-template-base/
 
 ## 🛠️ 技術スタック
 
-- **Monorepo**: Turborepo
-- **パッケージマネージャー**: pnpm
-- **ランタイム管理**: mise
-- **フレームワーク**: Next.js 16 (App Router)
-  - cachedComponents: 有効化済み
+- Monorepo: Turborepo
+- パッケージマネージャー: pnpm
+- ランタイム管理: mise
+- フレームワーク: Next.js 16 (App Router)
+  - cacheComponents: 有効化済み
   - reactCompiler: 有効化済み
-- **UI**: React 19, shadcn/ui, Tailwind CSS 4
-- **言語**: TypeScript 5.9
-- **リンター**: ESLint
-- **フォーマッター**: Biome
-- **スタイルガイド**: @yoshinani/style-guide
-- **テスト**: Vitest
-- **CI/CD**: GitHub Actions
-- **環境変数管理**: @t3-oss/env-nextjs
-- **バリデーション**: Valibot
+- UI: React 19, shadcn/ui, Tailwind CSS 4
+- 言語: TypeScript 5.9
+- リンター: ESLint
+- フォーマッター: Biome
+- スタイルガイド: @yoshinani/style-guide
+- テスト: Vitest
+- CI/CD: GitHub Actions
+- 環境変数管理: @t3-oss/env-nextjs
+- バリデーション: Valibot
 
 ## 📋 要件
 
@@ -68,12 +68,12 @@ pnpm install
 
 このプロジェクトで使用しているVS Codeの推奨拡張機能をインストールすることを推奨します:
 
-- **Biome**: コードフォーマッター
-- **Tailwind CSS IntelliSense**: Tailwind CSSの補完
-- **ESLint**: コードの静的解析
-- **dotenv**: 環境変数ファイルのシンタックスハイライト
-- **Code Spell Checker**: スペルチェック
-- **Vitest**: テストランナー
+- Biome: コードフォーマッター
+- Tailwind CSS IntelliSense: Tailwind CSSの補完
+- ESLint: コードの静的解析
+- dotenv: 環境変数ファイルのシンタックスハイライト
+- Code Spell Checker: スペルチェック
+- Vitest: テストランナー
 
 VS Codeでプロジェクトを開くと、推奨拡張機能のインストールを促すプロンプトが表示されます。手動でインストールする場合は、`Cmd+Shift+P`（Mac）または`Ctrl+Shift+P`（Windows/Linux）を押して「Extensions: Show Recommended Extensions」を実行してください。
 
@@ -155,11 +155,12 @@ pnpm --filter web dev
 |----------|------|
 | `pnpm dev` | すべてのアプリケーションの開発サーバーを起動 |
 | `pnpm build` | すべてのパッケージをビルド |
-| `pnpm check` | リンターとフォーマッターを実行（修正なし） |
-| `pnpm check:ci` | リンターとフォーマッターを実行（自動修正） |
-| `pnpm format` | Biomeでフォーマット（自動修正） |
+| `pnpm check` | リンターとフォーマッターを実行（自動修正あり） |
+| `pnpm check:ci` | リンターとフォーマッターを実行（CI用、修正なし） |
+| `pnpm format` | Biomeでフォーマット（自動修正あり） |
 | `pnpm format:ci` | Biomeでフォーマット（CI用、修正なし） |
-| `pnpm test` | すべてのパッケージのテストを実行 |
+| `pnpm test` | すべてのパッケージのテストを実行（ウォッチモード） |
+| `pnpm test:ci` | すべてのパッケージのテストを実行（CI用、ワンショット実行） |
 
 ### apps/web
 
@@ -176,15 +177,34 @@ pnpm --filter web dev
 |----------|------|
 | `pnpm --filter @repo/ui generate:component` | Reactコンポーネントを生成 |
 | `pnpm --filter @repo/ui ui add <component>` | shadcn/uiコンポーネントを追加（例: `pnpm --filter @repo/ui ui add button`） |
+| `pnpm --filter @repo/ui storybook` | Storybookを起動 |
+| `pnpm --filter @repo/ui build-storybook` | Storybookをビルド |
+| `pnpm --filter @repo/ui chromatic` | Chromaticで視覚的リグレッションテストを実行 |
 
 ## 🧪 テスト
 
 ```bash
-# すべてのテストを実行
+# すべてのテストをウォッチモードで実行
 pnpm test
+
+# すべてのテストをワンショットで実行（CI向け）
+pnpm test:ci
 
 # 特定のパッケージのテスト
 pnpm --filter web test
+```
+
+## 🏗️ AIエージェント（Microsoft APM）
+
+このプロジェクトはAIエージェントによる開発をサポートしています。
+
+- APM: スキルなどのエージェント向け依存は [Microsoft APM](https://github.com/microsoft/apm) で管理されています。
+- AGENTS.md: エージェント向けのガイドラインは [AGENTS.md](./AGENTS.md) を参照してください。
+
+エージェント向け依存をインストールするには、ルートディレクトリで以下を実行します：
+
+```bash
+pnpm dlx @microsoft/apm install
 ```
 
 ## 🏗️ ビルド
@@ -227,17 +247,17 @@ pnpm dlx shadcn@latest add button card dialog
 
 このプロジェクトでは以下のツールを使用してコード品質を保証しています:
 
-- **ESLint**: コードの静的解析（リンター）
-- **Biome**: コードフォーマッター
-- **TypeScript**: 型チェック
+- ESLint: コードの静的解析（リンター）
+- Biome: コードフォーマッター
+- TypeScript: 型チェック
 
 リンター・フォーマッターのルールセットには`@yoshinani/style-guide`を使用しています:
 
-- **ESLint設定**:
+- ESLint設定:
   - `apps/web`: `@yoshinani/style-guide/eslint/next`
   - `packages/ui`: `@yoshinani/style-guide/eslint/react-internal`
-- **Biome設定**: `@yoshinani/style-guide/biome`
-- **TypeScript設定**:
+- Biome設定: `@yoshinani/style-guide/biome`
+- TypeScript設定:
   - `apps/web`: `@yoshinani/style-guide/typescript/nextjs`
   - `packages/ui`: `@yoshinani/style-guide/typescript/react-library`
 
@@ -269,8 +289,8 @@ pnpm dlx shadcn@latest add button card dialog
 
 `pnpm check`または`pnpm check:ci`を実行すると、以下のチェックが行われます:
 
-- **ESLint**: コードの静的解析（リント）
-- **Biome**: コードフォーマットとインポートソートのチェック
+- ESLint: コードの静的解析（リント）
+- Biome: コードフォーマットとインポートソートのチェック
 
 ```bash
 # すべてのチェックを実行（修正なし）
@@ -287,9 +307,10 @@ GitHub Actionsで以下のワークフローが PR および手動実行時に�
 | ワークフロー | ジョブ名 | 内容 |
 |-------------|----------|------|
 | [Check](.github/workflows/check.yml) | `check` | 型チェック（TypeScript）・Biome・ESLint |
-| [Test](.github/workflows/test.yml) | `test` | Vitest による単体テスト |
+| [Test](.github/workflows/test.yml) | `test` | Vitest による単体テストおよびカバレッジレポート |
+| [Chromatic](.github/workflows/chromatic.yml) | `chromatic` | Chromatic による視覚的リグレッションテスト |
 
-**PR でテストを必須にするには**、GitHub のブランチ保護ルールで上記のステータスチェック（`check` と `test`）を「必須」にしてください。手順は [.github/BRANCH_PROTECTION.md](.github/BRANCH_PROTECTION.md) を参照してください。
+PR でテストを必須にするには、GitHub のブランチ保護ルールで上記のステータスチェック（`check`, `test`, `chromatic`）を「必須」に設定することを推奨します。
 
 ## 📚 関連ドキュメント
 

@@ -38,7 +38,6 @@
 - `pnpm format`: コードフォーマット（Biome）
 - `pnpm check`: 型チェック、リント、フォーマットチェック
 - `pnpm test`: テスト実行
-- `pnpm e2e`: E2Eテスト実行
 
 ## Cursor Cloud specific instructions
 
