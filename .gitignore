@@ -44,3 +44,6 @@ storybook-static
 
 # APM dependencies
 apm_modules/
+
+# Air
+.air
