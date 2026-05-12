@@ -42,7 +42,7 @@
 ## Cursor Cloud specific instructions
 
 - **ランタイム**: Node.js >= 22 と pnpm 10.12.4 が必要（VM環境にプリインストール済み）
-- **開発サーバー**: `apps/web` ディレクトリで `pnpm dev` を実行するとポート3000でNext.js（Turbopack）が起動する
+- **開発サーバー**: `pnpm dev` を実行すると [portless](https://portless.sh/) 経由で Next.js（Turbopack）が `https://web.localhost` に起動する（初回のみローカル CA インストールと sudo プロンプトが必要）
 - **リント/チェック**: CIと同じ非対話的チェックには `pnpm check:ci` を使用（`pnpm check` は自動修正付き）
 - **テスト**: `pnpm test:ci` でVitest単体テストをワンショット実行（`pnpm test` はwatchモード）
 - **外部サービス不要**: データベース、Docker、外部APIへの依存なし。純粋なフロントエンドモノレポ

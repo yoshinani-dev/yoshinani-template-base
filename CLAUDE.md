@@ -18,7 +18,7 @@ Workspace-wide (run from repo root):
 
 | Command | Purpose |
 |---------|---------|
-| `pnpm dev` | Start all dev servers (`apps/web` on :3000) |
+| `pnpm dev` | Start all dev servers (`apps/web` at `https://web.localhost` via portless) |
 | `pnpm build` | Build all packages |
 | `pnpm check` | typecheck + Biome + ESLint **with autofix** (local use) |
 | `pnpm check:ci` | Same checks **without autofix** (CI / verification) |
@@ -41,6 +41,7 @@ Note: `apps/web` `check` runs `next typegen` first (needed because `typedRoutes`
 
 - Node ≥ 22, pnpm 10.12.4 (pinned via `packageManager`); `mise.toml` is the source of truth.
 - `pnpm-workspace.yaml` pre-approves `onlyBuiltDependencies` (sharp, esbuild, etc.) — do **not** run `pnpm approve-builds` interactively.
+- `mise install` also installs [portless](https://portless.sh/) (via `npm:portless`). The `apps/web` dev script invokes `portless web next dev --turbopack`, so the dev URL is `https://web.localhost`. First run installs a local CA and binds :443 (sudo prompt). Don't run `next dev` directly unless you've also done `portless trust`.
 - No databases, Docker, or external services — pure frontend monorepo.
 
 ## Environment variables
