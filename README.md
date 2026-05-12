@@ -20,6 +20,7 @@ yoshinani-template-base/
 - Monorepo: Turborepo
 - パッケージマネージャー: pnpm
 - ランタイム管理: mise
+- ローカル HTTPS / 名前付き URL: portless
 - フレームワーク: Next.js 16 (App Router)
   - cacheComponents: 有効化済み
   - reactCompiler: 有効化済み
@@ -38,6 +39,7 @@ yoshinani-template-base/
 - Node.js >= 22
 - pnpm 10.12.4
 - mise (推奨: バージョン管理用)
+- [portless](https://portless.sh/)（ローカル開発で `https://web.localhost` を使うため。`mise install` でまとめて入る）
 
 ## 🚀 セットアップ
 
@@ -53,18 +55,35 @@ cd yoshinani-template-base
 miseを使用する場合（推奨）:
 
 ```bash
-mise install
+mise install            # Node.js / pnpm / portless をまとめて取得
 pnpm install
 ```
 
 miseを使用しない場合:
 
 ```bash
-# Node.js 22以上とpnpm 10.12.4を手動でインストール
+# Node.js 22以上 / pnpm 10.12.4 / portless を手動でインストール
+npm install -g portless
 pnpm install
 ```
 
-### 3. VS Code拡張機能のインストール（推奨）
+### 3. portless（ローカル HTTPS）の初回セットアップ
+
+`apps/web` の `pnpm dev` は [portless](https://portless.sh/) 経由で `https://web.localhost` に起動します。初回起動時に以下が自動で行われます。
+
+- ローカル CA の生成・OS の信頼ストアへの登録（sudo プロンプトが出ます）
+- HTTPS プロキシによる :443 のバインド
+- Next.js への `PORT` 環境変数の自動注入（ポート競合の心配なし）
+
+事前に CA だけ入れておきたい場合は、リポジトリ外でも以下を実行できます。
+
+```bash
+portless trust          # ローカル CA を OS の信頼ストアに追加
+```
+
+Git worktree でブランチを並行開発する際は、portless が worktree を検出し `https://<branch>.web.localhost` のように自動でサブドメインを切ってくれます。
+
+### 4. VS Code拡張機能のインストール（推奨）
 
 このプロジェクトで使用しているVS Codeの推奨拡張機能をインストールすることを推奨します:
 
@@ -136,7 +155,7 @@ NEXT_PUBLIC_APP_NAME="My App"
 pnpm dev
 ```
 
-`apps/web`が `http://localhost:3000` で起動します。
+`apps/web` が `https://web.localhost` で起動します（portless 経由）。ポート番号を意識せずに HTTPS でアクセスでき、Cookie の `Secure` / `SameSite=None` など本番に近い条件で検証できます。
 
 ### 個別のパッケージでの開発
 
