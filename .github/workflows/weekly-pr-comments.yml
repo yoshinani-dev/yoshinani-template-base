@@ -111,18 +111,22 @@ jobs:
           # URLのみを改行区切りで抽出
           MESSAGE=$(echo "$COMMENTS" | jq -r '.[] | .url' | paste -sd '\n' -)
           
-          # Slack Webhook で送信
-          curl -X POST "$SLACK_WEBHOOK_URL" \
-            -H 'Content-Type: application/json' \
-            -d "$(jq -n \
-              --arg text "$MESSAGE" \
-              --arg channel "notify-pr-comments" \
-              '{
-                channel: $channel,
-                username: "PR Comments Bot",
-                icon_emoji: ":memo:",
-                text: $text
-              }')"
+          # メッセージが空でないことを確認してから送信
+          if [ -n "$MESSAGE" ]; then
+            curl -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "$(jq -n \
+                --arg text "$MESSAGE" \
+                --arg channel "notify-pr-comments" \
+                '{
+                  channel: $channel,
+                  username: "PR Comments Bot",
+                  icon_emoji: ":memo:",
+                  text: $text
+                }')"
+          else
+            echo "メッセージが空のため、Slack通知をスキップしました"
+          fi
 
       - name: Summary
         run: |
