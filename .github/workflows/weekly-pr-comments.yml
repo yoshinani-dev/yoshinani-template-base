@@ -1,0 +1,143 @@
+name: Weekly PR Comments Notification
+
+on:
+  schedule:
+    # 毎週月曜 10:00 JST (01:00 UTC)
+    - cron: '0 1 * * 1'
+  workflow_dispatch: # 手動実行も可能
+
+permissions:
+  issues: read
+  pull-requests: read
+  contents: read
+
+jobs:
+  notify-weekly-comments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Collect PR comments with reactions
+        id: collect
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            const comments = [];
+            
+            // Issue comments (PR Conversation) を取得
+            const issueComments = await github.paginate(github.rest.issues.listCommentsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              since: oneWeekAgo.toISOString(),
+              per_page: 100
+            });
+            
+            // Pull Request Review comments を取得
+            const reviewComments = await github.paginate(github.rest.pulls.listReviewCommentsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              since: oneWeekAgo.toISOString(),
+              per_page: 100
+            });
+            
+            // Issue comments から PR 関連のものを抽出し、リアクションをチェック
+            for (const comment of issueComments) {
+              if (!comment.html_url.includes('/pull/')) continue;
+              
+              const reactions = await github.rest.reactions.listForIssueComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id
+              });
+              
+              const hasThumbsUp = reactions.data.some(r => 
+                r.content === '+1' && r.user.type !== 'Bot'
+              );
+              
+              if (hasThumbsUp) {
+                comments.push({
+                  type: 'conversation',
+                  url: comment.html_url,
+                  body: comment.body.substring(0, 200),
+                  author: comment.user.login,
+                  created_at: comment.created_at
+                });
+              }
+            }
+            
+            // Review comments のリアクションをチェック
+            for (const comment of reviewComments) {
+              const reactions = await github.rest.reactions.listForPullRequestReviewComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id
+              });
+              
+              const hasThumbsUp = reactions.data.some(r => 
+                r.content === '+1' && r.user.type !== 'Bot'
+              );
+              
+              if (hasThumbsUp) {
+                comments.push({
+                  type: 'review',
+                  url: comment.html_url,
+                  body: comment.body.substring(0, 200),
+                  author: comment.user.login,
+                  created_at: comment.created_at
+                });
+              }
+            }
+            
+            core.setOutput('comments', JSON.stringify(comments));
+            core.setOutput('count', comments.length);
+            return comments.length;
+
+      - name: Send to Slack
+        if: steps.collect.outputs.count > 0
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          COMMENTS='${{ steps.collect.outputs.comments }}'
+          COUNT='${{ steps.collect.outputs.count }}'
+          
+          # Slack メッセージを構築
+          MESSAGE="📌 *直近1週間で👍が付いたPRコメント（${COUNT}件）*\n\n"
+          
+          echo "$COMMENTS" | jq -r '.[] | "• <\(.url)|\(.type | if . == "conversation" then "Conversation" else "Review" end)> by @\(.author)\n  \(.body | gsub("\n"; " "))...\n"' | while IFS= read -r line; do
+            MESSAGE="${MESSAGE}${line}"
+          done
+          
+          # Slack Webhook で送信
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "$(jq -n \
+              --arg text "$MESSAGE" \
+              --arg channel "notify-pr-comments" \
+              '{
+                channel: $channel,
+                username: "PR Comments Bot",
+                icon_emoji: ":memo:",
+                text: $text
+              }')"
+
+      - name: Summary
+        run: |
+          echo "## 週次PRコメント収集結果" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 収集期間: 直近1週間" >> $GITHUB_STEP_SUMMARY
+          echo "- 👍付きコメント数: ${{ steps.collect.outputs.count }}件" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.collect.outputs.count }}" -eq "0" ]; then
+            echo "- 該当するコメントはありませんでした" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Slack通知: 完了" >> $GITHUB_STEP_SUMMARY
+          fi

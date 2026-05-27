@@ -328,8 +328,30 @@ GitHub Actionsで以下のワークフローが PR および手動実行時に�
 | [Check](.github/workflows/check.yml) | `check` | 型チェック（TypeScript）・Biome・ESLint |
 | [Test](.github/workflows/test.yml) | `test` | Vitest による単体テストおよびカバレッジレポート |
 | [Chromatic](.github/workflows/chromatic.yml) | `chromatic` | Chromatic による視覚的リグレッションテスト |
+| [Weekly PR Comments](.github/workflows/weekly-pr-comments.yml) | `notify-weekly-comments` | 毎週月曜10時（JST）に直近1週間で👍が付いたPRコメントをSlackへ通知 |
 
 PR でテストを必須にするには、GitHub のブランチ保護ルールで上記のステータスチェック（`check`, `test`, `chromatic`）を「必須」に設定することを推奨します。
+
+### 週次PRコメント通知の設定
+
+`weekly-pr-comments.yml` ワークフローを使用するには、以下のシークレットをGitHubリポジトリに設定する必要があります:
+
+1. GitHubリポジトリの **Settings** → **Secrets and variables** → **Actions** に移動
+2. **New repository secret** をクリック
+3. 以下のシークレットを追加:
+
+| シークレット名 | 説明 |
+|--------------|------|
+| `SLACK_WEBHOOK_URL` | Slackの `notify-pr-comments` チャンネル用のWebhook URL |
+
+#### Slack Webhook URLの取得方法
+
+1. Slack Appの管理画面 ([api.slack.com/apps](https://api.slack.com/apps)) にアクセス
+2. 対象のWorkspaceでAppを作成または既存のAppを選択
+3. **Incoming Webhooks** を有効化
+4. **Add New Webhook to Workspace** をクリック
+5. `notify-pr-comments` チャンネルを選択
+6. 生成されたWebhook URLをコピーしてGitHubシークレットに設定
 
 ## 📚 関連ドキュメント
 
