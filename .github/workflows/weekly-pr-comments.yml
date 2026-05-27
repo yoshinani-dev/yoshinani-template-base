@@ -107,27 +107,26 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           COMMENTS='${{ steps.collect.outputs.comments }}'
-          COUNT='${{ steps.collect.outputs.count }}'
           
-          # Slack メッセージを構築
-          MESSAGE="📌 *直近1週間で👍が付いたPRコメント（${COUNT}件）*\n\n"
+          # URLのみを改行区切りで抽出
+          MESSAGE=$(echo "$COMMENTS" | jq -r '.[] | .url' | paste -sd '\n' -)
           
-          echo "$COMMENTS" | jq -r '.[] | "• <\(.url)|\(.type | if . == "conversation" then "Conversation" else "Review" end)> by @\(.author)\n  \(.body | gsub("\n"; " "))...\n"' | while IFS= read -r line; do
-            MESSAGE="${MESSAGE}${line}"
-          done
-          
-          # Slack Webhook で送信
-          curl -X POST "$SLACK_WEBHOOK_URL" \
-            -H 'Content-Type: application/json' \
-            -d "$(jq -n \
-              --arg text "$MESSAGE" \
-              --arg channel "notify-pr-comments" \
-              '{
-                channel: $channel,
-                username: "PR Comments Bot",
-                icon_emoji: ":memo:",
-                text: $text
-              }')"
+          # メッセージが空でないことを確認してから送信
+          if [ -n "$MESSAGE" ]; then
+            curl -X POST "$SLACK_WEBHOOK_URL" \
+              -H 'Content-Type: application/json' \
+              -d "$(jq -n \
+                --arg text "$MESSAGE" \
+                --arg channel "notify-pr-comments" \
+                '{
+                  channel: $channel,
+                  username: "PR Comments Bot",
+                  icon_emoji: ":memo:",
+                  text: $text
+                }')"
+          else
+            echo "メッセージが空のため、Slack通知をスキップしました"
+          fi
 
       - name: Summary
         run: |
