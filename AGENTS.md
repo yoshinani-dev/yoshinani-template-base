@@ -45,6 +45,6 @@
 - **開発サーバー**: `pnpm dev` を実行すると [portless](https://portless.sh/) 経由で Next.js（Turbopack）が `https://web.localhost` に起動する（初回のみローカル CA インストールと sudo プロンプトが必要）
 - **リント/チェック**: CIと同じ非対話的チェックには `pnpm check:ci` を使用（`pnpm check` は自動修正付き）
 - **テスト**: `pnpm test:ci` でVitest単体テストをワンショット実行（`pnpm test` はwatchモード）
-- **カバレッジ**: CIでは Cobertura を GitHub Code Coverage API に送信。PR の表示は GitHub の Files changed などネイティブ UI で確認
+- **カバレッジ**: CIでは Cobertura を GitHub Code Coverage API に送信。PR の表示は GitHub の Files changed などネイティブ UI で確認。**前提**: リポジトリで [Code Quality を有効化](https://docs.github.com/en/code-security/how-tos/maintain-quality-code/enable-code-quality)（Settings → Security → Code quality → Enable）。未有効だと upload が HTTP 403 になる
 - **外部サービス不要**: データベース、Docker、外部APIへの依存なし。純粋なフロントエンドモノレポ
 - **`pnpm-workspace.yaml`の`onlyBuiltDependencies`**: ネイティブモジュール（sharp, esbuild等）のビルド承認は設定済み。対話的な`pnpm approve-builds`は不要
