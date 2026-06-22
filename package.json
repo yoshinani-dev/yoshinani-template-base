@@ -17,7 +17,7 @@
     "eslint": "^9.39.4",
     "turbo": "^2.9.18",
     "typescript": "5.9.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   },
   "packageManager": "pnpm@10.12.4",
   "engines": {
@@ -25,7 +25,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vitest": "4.1.8"
+      "vitest": "4.1.9"
     }
   }
 }
