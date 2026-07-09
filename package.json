@@ -12,10 +12,10 @@
     "test:ci": "turbo test:ci"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.1",
+    "@biomejs/biome": "^2.5.2",
     "@yoshinani/style-guide": "^0.18.1",
     "eslint": "^9.39.4",
-    "turbo": "^2.10.0",
+    "turbo": "^2.10.3",
     "typescript": "5.9.3",
     "vitest": "^4.1.9"
   },
