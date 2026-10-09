@@ -51,7 +51,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: main-coverage
         continue-on-error: true
-        uses: dawidd6/action-download-artifact@v24
+        uses: dawidd6/action-download-artifact@v27
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           workflow: test.yml
