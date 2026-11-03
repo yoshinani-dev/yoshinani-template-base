@@ -47,3 +47,16 @@
 - **テスト**: `pnpm test:ci` でVitest単体テストをワンショット実行（`pnpm test` はwatchモード）
 - **外部サービス不要**: データベース、Docker、外部APIへの依存なし。純粋なフロントエンドモノレポ
 - **`pnpm-workspace.yaml`の`onlyBuiltDependencies`**: ネイティブモジュール（sharp, esbuild等）のビルド承認は設定済み。対話的な`pnpm approve-builds`は不要
+
+## CI と検査（yoshinani 共通ルール）
+
+GitHub Actions では検査を実行しない。検査はすべてローカルで行う（正本: [CI_POLICY.md](https://github.com/yoshinani-dev/.github/blob/main/CI_POLICY.md)）。
+
+- `pnpm verify`: `git push` のたびに pre-push フックで自動実行される。失敗すると push できない。中身: `pnpm --filter @repo/ui exec playwright install chromium && pnpm check:ci && pnpm test:ci`
+- `pnpm verify:full`: PR をマージする前に必ず実行し、結果を PR の「テスト項目」に書く。中身: `pnpm run verify && pnpm build`
+- フックが動かないときは `pnpm install` を一度実行する（`prepare` で有効になる）
+- `git push --no-verify` は緊急時だけ。使ったら PR に理由を書く
+- Dependabot の PR もチェックアウトして `pnpm verify:full` を通してからマージする
+- Actions に検査用のワークフローを追加しない（置いてよいのは PR の自動ラベル付け・デプロイ・リリースだけ）
+- 必要なツール: 初回だけ Playwright の Chromium を入れる（`verify` が自動で入れる）
+- UI を変えたときの Chromatic は、必要に応じてローカルから `CHROMATIC_PROJECT_TOKEN=... pnpm --filter @repo/ui chromatic` で実行する

@@ -9,7 +9,10 @@
     "format:ci": "biome format .",
     "format": "biome format --write .",
     "test": "turbo test",
-    "test:ci": "turbo test:ci"
+    "test:ci": "turbo test:ci",
+    "verify": "pnpm --filter @repo/ui exec playwright install chromium && pnpm check:ci && pnpm test:ci",
+    "verify:full": "pnpm run verify && pnpm build",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.4",
